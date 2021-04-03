@@ -11,6 +11,7 @@ using Bot.Builder.Community.Components.Handoff.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
@@ -22,11 +23,11 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
     [Route("api/ServiceNow")]
     public class ServiceNowHandoffController : HandoffController
     {
-        private readonly BotAdapter _adapter;
+        private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IServiceNowCredentialsProvider _credentials;
         private readonly IBot _bot;
 
-        public ServiceNowHandoffController(BotAdapter adapter, IBot bot, IServiceNowCredentialsProvider credentials, ConversationHandoffRecordMap conversationHandoffRecordMap) : base(conversationHandoffRecordMap)
+        public ServiceNowHandoffController(IBotFrameworkHttpAdapter adapter, IBot bot, IServiceNowCredentialsProvider credentials, ConversationHandoffRecordMap conversationHandoffRecordMap) : base(conversationHandoffRecordMap)
         {
             _credentials = credentials;
             _adapter = adapter;
@@ -63,7 +64,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                             //await _adapter.ContinueConversationAsync(_credentials.MsAppId, eventActivity, _bot.OnTurnAsync, default);
 
                             //TEMPORARY WORKAROUND UNTIL CLOUDADAPTER IS IN PLACE SO ABOVE LINE WILL WORK
-                            await (_adapter).ContinueConversationAsync(
+                            await ((BotFrameworkHttpAdapter)_adapter).ContinueConversationAsync(
                                 _credentials.MsAppId,
                                 handoffRecord.ConversationReference,
                                 (turnContext, cancellationToken) => turnContext.SendActivityAsync(eventActivity, cancellationToken), default);
@@ -123,7 +124,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     {
                         MicrosoftAppCredentials.TrustServiceUrl(handoffRecord.ConversationReference.ServiceUrl);
 
-                        await (_adapter).ContinueConversationAsync(
+                        await ((BotFrameworkHttpAdapter)_adapter).ContinueConversationAsync(
                             _credentials.MsAppId,
                             handoffRecord.ConversationReference,
                             (turnContext, cancellationToken) => turnContext.SendActivityAsync(responseActivity, cancellationToken), default);

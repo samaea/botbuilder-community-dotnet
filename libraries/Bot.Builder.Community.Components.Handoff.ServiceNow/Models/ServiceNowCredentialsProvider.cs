@@ -9,6 +9,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow.Models
             ServiceNowTenant = configuration["ServiceNowTenant"];
             UserName = configuration["ServiceNowUserName"];
             Password = configuration["ServiceNowPassword"];
+            MsAppId = configuration["MicrosoftAppId"];
 
             // If the channel is the Emulator, and authentication is not in use,
             // the AppId will be null.  We generate a random AppId for this case only.
