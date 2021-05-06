@@ -36,6 +36,10 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     serviceNowHandoffRecord.ConversationRecord.ServiceNowUserName,
                     serviceNowHandoffRecord.ConversationRecord.ServiceNowPassword,
                     message).ConfigureAwait(false);
+
+                var traceActivity = Activity.CreateTraceActivity("ServiceNowVirtualAgent", label: "ServiceNowHandoff->Activity forwarded to ServiceNow");
+                await turnContext.SendActivityAsync(traceActivity);
+
             }
         }
         public override async Task<HandoffRecord> Escalate(ITurnContext turnContext, IEventActivity handoffEvent)
